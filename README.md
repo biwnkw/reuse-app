@@ -1,50 +1,44 @@
-# Welcome to your Expo app 👋
+# ReUse! App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+O ReUse! é um aplicativo mobile desenvolvido em React Native com Expo, com o objetivo de incentivar a reutilização de objetos e o consumo mais consciente.
 
-## Get started
+A proposta do app é simular um pequeno marketplace onde usuários podem visualizar produtos reutilizáveis, além de ter uma área de perfil com personalização.
 
-1. Install dependencies
+## Funcionalidades
 
-   ```bash
+- Tela inicial de apresentação
+- Tela de login (simulada)
+- Página principal com listagem de produtos
+- Tela de perfil do usuário
+- Armazenamento local do nome com AsyncStorage
+- Uso da câmera para captura de imagem
+
+## Tecnologias utilizadas
+
+- React Native
+- Expo
+- Expo Router
+- AsyncStorage
+- Expo Image Picker
+
+## Como executar o projeto
+
+1. Instalar as dependências:
+   
    npm install
-   ```
 
-2. Start the app
+2. Iniciar o projeto:
 
-   ```bash
    npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
+3. Abrir no celular utilizando o Expo Go ou em um emulador
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Sobre o desenvolvimento
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+O projeto foi desenvolvido com foco em navegação entre telas, organização visual e utilização de recursos nativos do dispositivo, como armazenamento local e câmera.
 
-## Get a fresh project
+A interface foi pensada para ser simples e intuitiva, mantendo consistência visual entre as telas.
 
-When you're ready, run:
+## Autora
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Bianka Sousa
