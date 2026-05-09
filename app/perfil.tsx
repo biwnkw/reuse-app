@@ -1,16 +1,34 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function Perfil() {
+  const router = useRouter();
+
   const [nome, setNome] = useState('');
   const [nomeSalvo, setNomeSalvo] = useState('');
+  const [emailUsuario, setEmailUsuario] = useState('');
   const [imagem, setImagem] = useState<string | null>(null);
 
   useEffect(() => {
-    carregarNome();
+    carregarPerfil();
   }, []);
+
+  const carregarPerfil = async () => {
+    const valorNome = await AsyncStorage.getItem('nomeUsuario');
+    const usuario = await AsyncStorage.getItem('usuarioLogado');
+
+    if (valorNome) {
+      setNomeSalvo(valorNome);
+    }
+
+    if (usuario) {
+      const dadosUsuario = JSON.parse(usuario);
+      setEmailUsuario(dadosUsuario.email);
+    }
+  };
 
   const salvarNome = async () => {
     if (nome.trim() === '') {
@@ -21,13 +39,6 @@ export default function Perfil() {
     await AsyncStorage.setItem('nomeUsuario', nome);
     setNomeSalvo(nome);
     setNome('');
-  };
-
-  const carregarNome = async () => {
-    const valor = await AsyncStorage.getItem('nomeUsuario');
-    if (valor) {
-      setNomeSalvo(valor);
-    }
   };
 
   const abrirCamera = async () => {
@@ -46,6 +57,11 @@ export default function Perfil() {
     if (!resultado.canceled) {
       setImagem(resultado.assets[0].uri);
     }
+  };
+
+  const sair = async () => {
+    await AsyncStorage.removeItem('usuarioLogado');
+    router.replace('/login');
   };
 
   return (
@@ -89,6 +105,19 @@ export default function Perfil() {
           marginBottom: 20,
         }}
       >
+        {emailUsuario !== '' && (
+          <Text
+            style={{
+              color: '#cbd5e1',
+              marginBottom: 15,
+              fontSize: 14,
+              textAlign: 'center',
+            }}
+          >
+            Sessão ativa: {emailUsuario}
+          </Text>
+        )}
+
         <Text style={{ color: '#94a3b8', marginBottom: 8, fontSize: 14 }}>
           Seu nome
         </Text>
@@ -149,6 +178,7 @@ export default function Perfil() {
           borderRadius: 14,
           width: '100%',
           alignItems: 'center',
+          marginBottom: 15,
         }}
         onPress={abrirCamera}
       >
@@ -160,6 +190,27 @@ export default function Perfil() {
           }}
         >
           Tirar Foto 📸
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#ef4444',
+          padding: 14,
+          borderRadius: 14,
+          width: '100%',
+          alignItems: 'center',
+        }}
+        onPress={sair}
+      >
+        <Text
+          style={{
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: 16,
+          }}
+        >
+          Sair da conta
         </Text>
       </TouchableOpacity>
 

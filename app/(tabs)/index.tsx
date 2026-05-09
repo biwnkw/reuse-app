@@ -1,8 +1,22 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useEffect } from 'react';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Index() {
   const router = useRouter();
+
+  useEffect(() => {
+    verificarLogin();
+  }, []);
+
+  const verificarLogin = async () => {
+    const usuario = await AsyncStorage.getItem('usuarioLogado');
+
+    if (usuario) {
+      router.replace('/home');
+    }
+  };
 
   return (
     <View
@@ -43,6 +57,7 @@ export default function Index() {
           paddingVertical: 14,
           paddingHorizontal: 35,
           borderRadius: 12,
+          marginBottom: 20,
         }}
       >
         <Text
@@ -55,6 +70,8 @@ export default function Index() {
           Começar
         </Text>
       </TouchableOpacity>
+
+      <ActivityIndicator color="#2ecc71" />
     </View>
   );
 }

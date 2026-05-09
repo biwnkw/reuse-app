@@ -1,39 +1,64 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-const produtos = [
-  {
-    id: 1,
-    nome: 'Cadeira de Madeira',
-    categoria: 'Móveis',
-    preco: 'R$ 80,00',
-    imagem: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 2,
-    nome: 'Luminária Vintage',
-    categoria: 'Decoração',
-    preco: 'R$ 45,00',
-    imagem: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 3,
-    nome: 'Bicicleta Urbana',
-    categoria: 'Mobilidade',
-    preco: 'R$ 250,00',
-    imagem: 'https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 4,
-    nome: 'Livros Seminovos',
-    categoria: 'Educação',
-    preco: 'R$ 20,00',
-    imagem: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=800&q=80',
-  },
-];
+type Produto = {
+  id: number;
+  title: string;
+  price: number;
+  category: {
+    name: string;
+  };
+  images: string[];
+};
 
 export default function Home() {
   const router = useRouter();
+
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [usandoCache, setUsandoCache] = useState(false);
+
+  useEffect(() => {
+    carregarProdutos();
+  }, []);
+
+  const carregarProdutos = async () => {
+    try {
+      const resposta = await fetch(
+        'https://api.escuelajs.co/api/v1/products?offset=0&limit=8'
+      );
+
+      const dados = await resposta.json();
+
+      setProdutos(dados);
+
+      await AsyncStorage.setItem(
+        'produtosCache',
+        JSON.stringify(dados)
+      );
+
+      setUsandoCache(false);
+    } catch {
+      const cache = await AsyncStorage.getItem('produtosCache');
+
+      if (cache) {
+        setProdutos(JSON.parse(cache));
+        setUsandoCache(true);
+      }
+    } finally {
+      setCarregando(false);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0f172a' }}>
@@ -76,6 +101,25 @@ export default function Home() {
           </Text>
         </TouchableOpacity>
 
+        {usandoCache && (
+          <Text
+            style={{
+              color: '#facc15',
+              textAlign: 'center',
+              marginBottom: 16,
+            }}
+          >
+            Exibindo produtos salvos no cache local
+          </Text>
+        )}
+
+        {carregando && (
+          <ActivityIndicator
+            size="large"
+            color="#2ecc71"
+          />
+        )}
+
         {produtos.map((produto) => (
           <View
             key={produto.id}
@@ -87,7 +131,7 @@ export default function Home() {
             }}
           >
             <Image
-              source={{ uri: produto.imagem }}
+              source={{ uri: produto.images?.[0] }}
               style={{
                 width: '100%',
                 height: 180,
@@ -104,7 +148,7 @@ export default function Home() {
                 marginBottom: 4,
               }}
             >
-              {produto.nome}
+              {produto.title}
             </Text>
 
             <Text
@@ -114,7 +158,7 @@ export default function Home() {
                 marginBottom: 4,
               }}
             >
-              {produto.categoria}
+              {produto.category?.name}
             </Text>
 
             <Text
@@ -125,7 +169,7 @@ export default function Home() {
                 marginBottom: 12,
               }}
             >
-              {produto.preco}
+              R$ {produto.price}
             </Text>
 
             <TouchableOpacity
